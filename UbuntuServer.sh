@@ -45,10 +45,11 @@ failedip=1 && failedsn=1 && failedgw=1 && faileddns=1
 
 #Install updates
 sudo apt-get update -y && sudo apt-get upgrade -y
-#Install Btop and Net-Tools and NCDU
+#Install Btop and Net-Tools and NCDU and Subnetcalc
 sudo apt install net-tools -y
 sudo apt install btop -y
 sudo apt install ncdu -y #Look at disk Usage with: sudo ncdu -x /
+sudo apt install subnetcalc -y
 
 #Cleanup /usr/lib/modules and /usr/lib/x86_64-linux-gnu
 sudo apt remove $(dpkg-query --show 'linux-modules-*' | cut -f1 | grep -v "$(uname -r)")
