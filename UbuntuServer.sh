@@ -58,7 +58,7 @@ sudo apt remove $(dpkg-query --show 'linux-modules-*' | cut -f1 | grep -v "$(una
 sudo bash -c 'rm /var/lib/snapd/cache/*'
 sudo journalctl --vacuum-size=50M
 
-#Install Docke and Docker-Compose
+#Install Docker and Docker-Compose
 sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
