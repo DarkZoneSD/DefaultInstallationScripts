@@ -18,7 +18,9 @@ echo "network:
      dhcp4: no
      dhcp6: no
      addresses: [$newip$getcidrval]
-     gateway4: $newgw
+     routes:
+        - to: 0.0.0.0/0
+          via: $newgw
      nameservers:
        addresses: [$newdns]" > /etc/netplan/01-ens160.yaml
 }
@@ -43,30 +45,6 @@ sed -i -- "s/${currenthost}/${newhostname}/g" /etc/hosts #/etc/hosts
 }
 failedip=1 && failedsn=1 && failedgw=1 && faileddns=1
 
-#Install updates
-sudo apt-get update -y && sudo apt-get upgrade -y
-#Install Btop and Net-Tools and NCDU and Subnetcalc
-sudo apt install net-tools -y
-sudo apt install btop -y
-sudo apt install ncdu -y #Look at disk Usage with: sudo ncdu -x /
-sudo apt install subnetcalc -y
-
-#Cleanup /usr/lib/modules and /usr/lib/x86_64-linux-gnu
-sudo apt remove $(dpkg-query --show 'linux-modules-*' | cut -f1 | grep -v "$(uname -r)")
-
-#Cleanup /var/lib/snap/cache/ and /var/log/journal
-sudo bash -c 'rm /var/lib/snapd/cache/*'
-sudo journalctl --vacuum-size=50M
-
-#Install Docker and Docker-Compose
-sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
-apt-cache policy docker-ce
-sudo apt install docker-ce -y
-
-sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
 #Configure new IP, Subnet, Gateway, DNS and HostName
 while getopts :n:i:s:g:d:h flag
 do
@@ -81,6 +59,30 @@ do
 done
 sudo rm -f /etc/netplan/50-cloud-init.yaml
 if [ $failedip -eq 0 ] && [ $failedsn -eq 0 ] && [ $failedgw -eq 0 ] && [ $faileddns -eq 0 ]; then
+        #Install updates
+        sudo apt-get update -y && sudo apt-get upgrade -y
+        #Install Btop and Net-Tools and NCDU and Subnetcalc
+        sudo apt install net-tools -y
+        sudo apt install btop -y
+        sudo apt install ncdu -y #Look at disk Usage with: sudo ncdu -x /
+        sudo apt install subnetcalc -y
+        
+        #Cleanup /usr/lib/modules and /usr/lib/x86_64-linux-gnu
+        sudo apt remove $(dpkg-query --show 'linux-modules-*' | cut -f1 | grep -v "$(uname -r)")
+        
+        #Cleanup /var/lib/snap/cache/ and /var/log/journal
+        sudo bash -c 'rm /var/lib/snapd/cache/*'
+        sudo journalctl --vacuum-size=50M
+        
+        #Install Docker and Docker-Compose
+        sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+        sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+        apt-cache policy docker-ce
+        sudo apt install docker-ce -y
+        
+        sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        sudo chmod +x /usr/local/bin/docker-compose
         createNetplanFile
         sudo netplan apply
         sudo shutdown -r now
