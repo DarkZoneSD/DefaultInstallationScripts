@@ -5,6 +5,7 @@ sudo apt-get update -y && sudo apt-get upgrade -y
 sudo apt install net-tools
 sudo apt install btop
 sudo apt install ncdu #Look at disk Usage with: sudo ncdu -x /
+sudo apt install subnetcalc -y
 
 #Cleanup /usr/lib/modules and /usr/lib/x86_64-linux-gnu
 sudo apt remove $(dpkg-query --show 'linux-modules-*' | cut -f1 | grep -v "$(uname -r)")
