@@ -85,6 +85,7 @@ if [ $failedip -eq 0 ] && [ $failedsn -eq 0 ] && [ $failedgw -eq 0 ] && [ $faile
         sudo chmod +x /usr/local/bin/docker-compose
         createNetplanFile
         sudo netplan apply
+        echo "Your new IP Address is:\033[33;5m$newip\033[0m"
         sudo shutdown -r now
 else
         echo "Invalid inputs!"
