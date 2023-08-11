@@ -43,8 +43,17 @@ currenthost=$(head -n 1 /etc/hostname) #/etc/hostname
 echo $newhostname > /etc/hostname #/etc/hostname
 sed -i -- "s/${currenthost}/${newhostname}/g" /etc/hosts #/etc/hosts
 }
+##START##
 failedip=1 && failedsn=1 && failedgw=1 && faileddns=1
 
+        #Install updates
+        sudo apt-get update -y && sudo apt-get upgrade -y
+        #Install Btop and Net-Tools and NCDU and Subnetcalc
+        sudo apt install net-tools -y
+        sudo apt install btop -y
+        sudo apt install ncdu -y #Look at disk Usage with: sudo ncdu -x /
+        sudo apt install subnetcalc -y
+        
 #Configure new IP, Subnet, Gateway, DNS and HostName
 while getopts :n:i:s:g:d:h flag
 do
@@ -59,14 +68,7 @@ do
 done
 sudo rm -f /etc/netplan/50-cloud-init.yaml
 if [ $failedip -eq 0 ] && [ $failedsn -eq 0 ] && [ $failedgw -eq 0 ] && [ $faileddns -eq 0 ]; then
-        #Install updates
-        sudo apt-get update -y && sudo apt-get upgrade -y
-        #Install Btop and Net-Tools and NCDU and Subnetcalc
-        sudo apt install net-tools -y
-        sudo apt install btop -y
-        sudo apt install ncdu -y #Look at disk Usage with: sudo ncdu -x /
-        sudo apt install subnetcalc -y
-        
+  
         #Cleanup /usr/lib/modules and /usr/lib/x86_64-linux-gnu
         sudo apt remove $(dpkg-query --show 'linux-modules-*' | cut -f1 | grep -v "$(uname -r)")
         
