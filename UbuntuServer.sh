@@ -14,7 +14,7 @@ echo "network:
  version: 2
  renderer: networkd
  ethernets:
-   ens160:
+   eth0:
      dhcp4: no
      dhcp6: no
      addresses: [$newip$getcidrval]
@@ -22,7 +22,7 @@ echo "network:
         - to: 0.0.0.0/0
           via: $newgw
      nameservers:
-       addresses: [$newdns]" > /etc/netplan/01-ens160.yaml
+       addresses: [$newdns]" > /etc/netplan/01-eth0.yaml
 }
 help ()
 {
