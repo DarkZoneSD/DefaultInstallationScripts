@@ -94,6 +94,7 @@ if [ $failedip -eq 0 ] && [ $failedsn -eq 0 ] && [ $failedgw -eq 0 ] && [ $faile
         createNetplanFile
         sudo netplan apply
         echo "Your new IP Address is:\033[33;5m$newip\033[0m"
+        echo ""Connect via: ssh "\033[0;32;5m"administrator@$newip"\033[0m"
         sleep 3
         sudo shutdown -r now
 else
