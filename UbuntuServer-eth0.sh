@@ -47,12 +47,6 @@ sed -i -- "s/${currenthost}/${newhostname}/g" /etc/hosts #/etc/hosts
 ##START##
 failedip=1 && failedsn=1 && failedgw=1 && faileddns=1
 
-while getopts :n:i:s:g:d:h flag
-do
-        case "${flag}" in
-                h) help;;
-        esac
-done
         #Install updates
         sudo apt-get update -y && sudo apt-get upgrade -y
         #Install Btop and Net-Tools and NCDU and Subnetcalc
@@ -65,6 +59,7 @@ done
 while getopts :n:i:s:g:d:h flag
 do
         case "${flag}" in
+                h) help;;
                 n) newhostname=${OPTARG} && changehostname;;
                 i) newip=${OPTARG} && failedip=0;;
                 s) newsn=${OPTARG} && setsn && failedsn=0;;
