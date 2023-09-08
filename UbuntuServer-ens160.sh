@@ -32,8 +32,9 @@ echo "-s SubnetMask             Subnetmask of the new Network"
 echo "-g Gateway                Gateway of the new Network"
 echo "-d DNS                    Nameservers of the new Network, use comma to set multiple nameservers"
 echo ""
-echo "For Example: - sudo sh installation.sh -n NewHost -i 192.168.10.12 -s 255.255.255 -g 192.168.10.254 -d 192.168.10.254"
-echo "       - sudo sh installation.sh -n HostName -i 10.0.1.10 -s 255.255.0.0 -g 10.0.0.1 -d 10.0.0.2,10.0.0.3"
+echo "For Example: - sudo sh installation.sh -n NewHost -i 192.168.10.12 -s 255.255.255.0 -g 192.168.10.254 -d 192.168.10.254"
+echo "       - sudo sh installation.sh -n HostName -i 10.0.1.10 -s 255.255.128.0 -g 10.0.0.1 -d 10.0.0.2,10.0.0.3"
+exit 0
 }
 
 changehostname ()
@@ -53,13 +54,15 @@ failedip=1 && failedsn=1 && failedgw=1 && faileddns=1
         sudo apt install btop -y
         sudo apt install ncdu -y #Look at disk Usage with: sudo ncdu -x /
         sudo apt install subnetcalc -y
+        #Change Permissions to Netplan config Files
+        sudo chmod 600 /etc/netplan/*.yaml
         
 #Configure new IP, Subnet, Gateway, DNS and HostName
 while getopts :n:i:s:g:d:h flag
 do
         case "${flag}" in
-                n) newhostname=${OPTARG} && changehostname;;
                 h) help;;
+                n) newhostname=${OPTARG} && changehostname;;
                 i) newip=${OPTARG} && failedip=0;;
                 s) newsn=${OPTARG} && setsn && failedsn=0;;
                 g) newgw=${OPTARG} && failedgw=0;;
@@ -88,6 +91,7 @@ if [ $failedip -eq 0 ] && [ $failedsn -eq 0 ] && [ $failedgw -eq 0 ] && [ $faile
         createNetplanFile
         sudo netplan apply
         echo "Your new IP Address is:\033[33;5m$newip\033[0m"
+        echo ""Connect via: ssh "\033[0;32;5m"administrator@$newip"\033[0m"
         sleep 3
         sudo shutdown -r now
 else
