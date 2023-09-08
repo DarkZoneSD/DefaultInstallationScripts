@@ -54,6 +54,8 @@ failedip=1 && failedsn=1 && failedgw=1 && faileddns=1
         sudo apt install btop -y
         sudo apt install ncdu -y #Look at disk Usage with: sudo ncdu -x /
         sudo apt install subnetcalc -y
+        #Change Permissions to Netplan config Files
+        sudo chmod 600 /etc/netplan/*.yaml
         
 #Configure new IP, Subnet, Gateway, DNS and HostName
 while getopts :n:i:s:g:d:h flag
