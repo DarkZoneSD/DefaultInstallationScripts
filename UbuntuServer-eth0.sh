@@ -32,8 +32,9 @@ echo "-s SubnetMask             Subnetmask of the new Network"
 echo "-g Gateway                Gateway of the new Network"
 echo "-d DNS                    Nameservers of the new Network, use comma to set multiple nameservers"
 echo ""
-echo "For Example: - sudo sh installation.sh -n NewHost -i 192.168.10.12 -s 255.255.255 -g 192.168.10.254 -d 192.168.10.254"
-echo "       - sudo sh installation.sh -n HostName -i 10.0.1.10 -s 255.255.0.0 -g 10.0.0.1 -d 10.0.0.2,10.0.0.3"
+echo "For Example: - sudo sh installation.sh -n NewHost -i 192.168.10.12 -s 255.255.255.0 -g 192.168.10.254 -d 192.168.10.254"
+echo "       - sudo sh installation.sh -n HostName -i 10.0.1.10 -s 255.255.128.0 -g 10.0.0.1 -d 10.0.0.2,10.0.0.3"
+exit 0
 }
 
 changehostname ()
@@ -46,6 +47,12 @@ sed -i -- "s/${currenthost}/${newhostname}/g" /etc/hosts #/etc/hosts
 ##START##
 failedip=1 && failedsn=1 && failedgw=1 && faileddns=1
 
+while getopts :n:i:s:g:d:h flag
+do
+        case "${flag}" in
+                h) help;;
+        esac
+done
         #Install updates
         sudo apt-get update -y && sudo apt-get upgrade -y
         #Install Btop and Net-Tools and NCDU and Subnetcalc
@@ -59,7 +66,6 @@ while getopts :n:i:s:g:d:h flag
 do
         case "${flag}" in
                 n) newhostname=${OPTARG} && changehostname;;
-                h) help;;
                 i) newip=${OPTARG} && failedip=0;;
                 s) newsn=${OPTARG} && setsn && failedsn=0;;
                 g) newgw=${OPTARG} && failedgw=0;;
